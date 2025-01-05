@@ -50,32 +50,18 @@ namespace MiniProject_248207.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string loginName, string password,bool rememberMe)
+        public IActionResult Login(string loginName, string password)
         {
             // Authenticate the user
             var user = Users.Authenticate(loginName, password);
             if (user != null)
             {
                 HttpContext.Session.SetString("FullName", user.FullName);
-
-                // Handle "Remember Me" functionality
-                if (rememberMe)
-                {
-                    // Set cookie for LoginName
-                    var cookieOptions = new CookieOptions
-                    {
-                        Expires = DateTime.Now.AddMinutes(1), // Valid for 7 days
-                        HttpOnly = true,                  // Security: prevents JavaScript access
-                        IsEssential = true                // Required for compliance
-                    };
-
-                    Response.Cookies.Append("LoginName", user.LoginName ?? string.Empty, cookieOptions);
-                }
                 return RedirectToAction("Home");
             }
 
                 // Set error message if authentication fails
-                ViewBag.ErrorMessage = "Invalid LoginName or Password.";
+            ViewBag.ErrorMessage = "Invalid LoginName or Password.";
             return View();
         }
         public ActionResult Home()
