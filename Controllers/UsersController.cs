@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MiniProject_248207.Models;
+using NuGet.Protocol;
 
 namespace MiniProject_248207.Controllers
 {
@@ -11,14 +11,17 @@ namespace MiniProject_248207.Controllers
         // GET: HomeController1
         public ActionResult Register()
         {
-            ViewBag.Cities = City.GetCities();
-            return View();
+          ViewBag.Cities = City.GetCities();
+          return View();
         }
+
+
 
         // POST: HomeController1/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Register(Users user)
+
         {
             try
             {
@@ -32,86 +35,59 @@ namespace MiniProject_248207.Controllers
             }
         }
 
+        
         public ActionResult ViewAll()
         {
             var userdisplay = UserDisplay.GetAllUser();
             return View(userdisplay);
         }
 
+        
         public ActionResult Login()
         {
+
             return View();
         }
 
         [HttpPost]
-        public IActionResult Login(string loginName, string password, bool rememberMe)
+        public IActionResult Login(string loginName, string password)
         {
             // Authenticate the user
             var user = Users.Authenticate(loginName, password);
             if (user != null)
             {
-                // Set session data
                 HttpContext.Session.SetString("FullName", user.FullName);
-                HttpContext.Session.SetString("LoginName", user.LoginName);
-
-                if (rememberMe)
-                {
-                    // Set cookies for "Remember Me"
-                    CookieOptions cookieOptions = new CookieOptions
-                    {
-                        Expires = DateTime.Now.AddMinutes(1), // Cookie valid for 7 days
-                        HttpOnly = true,
-                        Secure = true // Use secure cookies in production
-                    };
-                    Response.Cookies.Append("FullName", user.FullName, cookieOptions);
-                    Response.Cookies.Append("LoginName", user.LoginName, cookieOptions);
-                }
-
                 return RedirectToAction("Home");
             }
 
-            // Set error message if authentication fails
+                // Set error message if authentication fails
             ViewBag.ErrorMessage = "Invalid LoginName or Password.";
             return View();
         }
-
         public ActionResult Home()
         {
-            // Check session or cookies
-            var loginName = HttpContext.Session.GetString("LoginName") ?? Request.Cookies["LoginName"];
-            if (string.IsNullOrEmpty(loginName))
-            {
-                return RedirectToAction("Login");
-            }
+            var fullName = HttpContext.Session.GetString("FullName");
 
-            ViewBag.FullName = HttpContext.Session.GetString("FullName") ?? Request.Cookies["FullName"];
+            ViewBag.FullName = fullName;
             return View();
+
         }
 
-        public ActionResult Edit()
-        {
-            var loginName = HttpContext.Session.GetString("LoginName") ?? Request.Cookies["LoginName"];
-            var user = Users.GetUserByLoginName(loginName);
-            if (user == null)
-            {
-                return RedirectToAction("Login");
-            }
 
-            var cities = City.GetCities();
-            ViewBag.Cities = new SelectList(cities, "CityId", "CityName");
-            return View(user);
+        
+        public ActionResult Edit(int id)
+        {
+            return View();
         }
 
         // POST: HomeController1/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Users user)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
             try
             {
-                Users.UpdateUser(user);
-                TempData["SuccessfullMessage"] = "Updated Successfully.";
-                return RedirectToAction("Home");
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -119,14 +95,10 @@ namespace MiniProject_248207.Controllers
             }
         }
 
-        // GET: LogOut
-        public ActionResult Logout()
+        // GET: HomeController1/Delete/5
+        public ActionResult Delete(int id)
         {
-            // Clear session and cookies
-            HttpContext.Session.Clear();
-            Response.Cookies.Delete("FullName");
-            Response.Cookies.Delete("LoginName");
-            return RedirectToAction("Login");
+            return View();
         }
 
         // POST: HomeController1/Delete/5
@@ -144,4 +116,6 @@ namespace MiniProject_248207.Controllers
             }
         }
     }
+   
 }
+
