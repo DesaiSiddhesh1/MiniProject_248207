@@ -74,7 +74,7 @@ namespace MiniProject_248207.Controllers
         }
 
 
-        // GET: HomeController1/Edit/5
+        
         public ActionResult Edit(int id)
         {
             return View();
@@ -87,7 +87,7 @@ namespace MiniProject_248207.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index))
             }
             catch
             {
