@@ -87,7 +87,7 @@ namespace MiniProject_248207.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index))
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
