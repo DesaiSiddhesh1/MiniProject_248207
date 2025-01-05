@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Globalization;
 
 namespace MiniProject_248207.Models
 {
@@ -138,6 +139,38 @@ namespace MiniProject_248207.Models
                 cn.Close();
             }
             return null;
+        }
+        public static void UpdateUser(Users user)
+        {
+            SqlConnection cn = new SqlConnection();
+            cn.ConnectionString = "Data Source=(localdb)\\ProjectModels;Initial Catalog=MiniProjectDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+            try
+            {
+                cn.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = cn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "UpdateUser";
+
+                cmd.Parameters.AddWithValue("@LoginName", user.LoginName);
+                cmd.Parameters.AddWithValue("@FullName", user.FullName);
+                cmd.Parameters.AddWithValue("@EmailId", user.EmailId);
+                cmd.Parameters.AddWithValue("@Gender", user.Gender);
+                cmd.Parameters.AddWithValue("@CityId", user.CityId);
+                cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
+
+                cmd.ExecuteNonQuery();
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                cn.Close();
+            }
         }
     }
 }

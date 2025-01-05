@@ -66,13 +66,18 @@ namespace MiniProject_248207.Controllers
             ViewBag.ErrorMessage = "Invalid LoginName or Password.";
             return View();
         }
+
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public ActionResult Home()
         {
-            var fullName = HttpContext.Session.GetString("FullName");
+            var loginName = HttpContext.Session.GetString("LoginName");
+            if (string.IsNullOrEmpty(loginName))
+            {
+                return RedirectToAction("Login");
+            }
 
-            ViewBag.FullName = fullName;
+            ViewBag.FullName = HttpContext.Session.GetString("FullName");
             return View();
-
         }
 
 
@@ -94,11 +99,14 @@ namespace MiniProject_248207.Controllers
         // POST: HomeController1/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Users user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+
+                Users.UpdateUser(user);
+                TempData["SuccessfullMessage"] = "Updated Successfully.";
+                return RedirectToAction("Home");
             }
             catch
             {
@@ -106,10 +114,11 @@ namespace MiniProject_248207.Controllers
             }
         }
 
-        // GET: HomeController1/Delete/5
-        public ActionResult Delete(int id)
+        // GET: LogOut
+        public ActionResult Logout()
         {
-            return View();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
         }
 
         // POST: HomeController1/Delete/5
