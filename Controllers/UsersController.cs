@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MiniProject_248207.Models;
 using NuGet.Protocol;
 
@@ -57,6 +58,7 @@ namespace MiniProject_248207.Controllers
             if (user != null)
             {
                 HttpContext.Session.SetString("FullName", user.FullName);
+                HttpContext.Session.SetString("LoginName", user.LoginName);
                 return RedirectToAction("Home");
             }
 
@@ -75,9 +77,18 @@ namespace MiniProject_248207.Controllers
 
 
         
-        public ActionResult Edit(int id)
+        public ActionResult Edit()
         {
-            return View();
+            var loginName = HttpContext.Session.GetString("LoginName");
+            var user = Users.GetUserByLoginName(loginName);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var cities = City.GetCities();
+            ViewBag.Cities = new SelectList(cities, "CityId", "CityName");
+            return View(user);
         }
 
         // POST: HomeController1/Edit/5
