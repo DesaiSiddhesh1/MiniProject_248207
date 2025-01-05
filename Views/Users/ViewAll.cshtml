@@ -1,0 +1,30 @@
+﻿@model IEnumerable<MiniProject_248207.Models.UserDisplay>
+
+@foreach (var cityGroup in Model.OrderBy(c => c.CityName).GroupBy(c => c.CityName))
+{
+    <h3>City Name: @cityGroup.Key</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Full Name</th>
+                <th>Gender</th>
+                <th>Email ID</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in cityGroup.Select((value, index) => new { value, index })) 
+            {
+                <tr>
+                    <td>@(customer.index + 1)</td>  
+                    <td>@customer.value.FullName</td>
+                    <td>@customer.value.Gender</td>
+                    <td>@customer.value.EmailId</td>
+                    <td>@customer.value.PhoneNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

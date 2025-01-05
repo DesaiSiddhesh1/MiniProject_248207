@@ -1,0 +1,8 @@
+﻿@{
+    string fullName = ViewBag.FullName as string;
+}
+
+<h2>Hello, @fullName</h2>
+
+<button onclick="location.href='@Url.Action("Logout", "Account")'">Logout</button>
+<button onclick="location.href='@Url.Action("EditProfile", "Account", new { fullName = fullName })'">Edit Profile</button>
